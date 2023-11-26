@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// schema.prisma
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  password String
+  name String
+}
+
+model Admin {
+  adminID Int @id @default(autoincrement())
+  email String @unique
+  jelszo String
+  nev String
+}
+
+model Csapat {
+  csapatID Int @id @default(autoincrement())
+  csapatnev String
+  varos String
+  alapitva Int @db.Year
+  hazaiMerkozesek Merkozes[] @relation("HazaiCs")
+  vendegMerkozesek Merkozes[] @relation("VendegCs")
+  resztvevok Resztvesz[]
+  jatekosok Jatekos[] 
+}
+
+model Jatekos {
+  jatekosID Int @id @default(autoincrement())
+  jatekosnev String
+  szul_datum DateTime? @db.Date
+  allampolgarsag String?
+  poszt String?
+  csapatID Int?
+  csapat Csapat? @relation(fields: [csapatID], references: [csapatID])
+  
+}
+
+model Merkozes {
+  merkozesID Int @id @default(autoincrement())
+  palya String?
+  datumIdopont DateTime?
+  hazaiCsID Int?
+  vendegCsID Int?
+  hazaiEredmeny Int?
+  vendegEredmeny Int?
+  hazaiCs Csapat? @relation("HazaiCs", fields: [hazaiCsID], references: [csapatID])
+  vendegCs Csapat? @relation("VendegCs", fields: [vendegCsID], references: [csapatID])
+}
+
+model Resztvesz {
+  csapatID Int
+  tornaID Int
+  csapat Csapat @relation(fields: [csapatID], references: [csapatID])
+  torna Torna @relation(fields: [tornaID], references: [tornaID])
+  @@id([csapatID, tornaID])
+}
+
+
+model Torna {
+  tornaID Int @id @default(autoincrement())
+  nev String
+  datum DateTime? @db.Date
+  helyszin String?
+  resztvevok Resztvesz[]
+}
+
