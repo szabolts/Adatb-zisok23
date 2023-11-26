@@ -51,8 +51,8 @@ export default function Nav({ session }: { session?: Session | null }) {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="/about">
-            About
+          <Link color="foreground" href="/tournaments">
+            Tournaments
           </Link>
         </NavbarItem>
         <NavbarItem>

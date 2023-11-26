@@ -1,11 +1,11 @@
 import { motion } from "framer-motion-3d";
 import { MotionConfig } from "framer-motion";
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, useState, useEffect } from "react";
 import { transition } from "./settings";
 import { Canvas, useThree } from "@react-three/fiber";
 import { useSmoothTransform } from "./use-smooth-transform";
-import { useLoader } from '@react-three/fiber'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export function Shapes({ isHover, isPress, mouseX, mouseY }) {
   const lightRotateX = useSmoothTransform(mouseY, spring, mouseToLightRotation);
@@ -26,7 +26,7 @@ export function Shapes({ isHover, isPress, mouseX, mouseY }) {
           animate={isHover ? "hover" : "rest"}
           dispose={null}
           variants={{
-            hover: { z: isPress ? -0.9 : 0 }
+            hover: { z: isPress ? -0.9 : 0 },
           }}
         >
           <Model />
@@ -34,115 +34,199 @@ export function Shapes({ isHover, isPress, mouseX, mouseY }) {
           <Cone />
           <Torus />
           <Icosahedron />
-          
+          <Labda2 />
+          <Labda3 />
         </motion.group>
       </MotionConfig>
     </Canvas>
   );
 }
 
+export function useSharedModel(url) {
+  const [model, setModel] = useState();
+  useEffect(() => {
+    const loader = new GLTFLoader();
+    loader.load(url, setModel);
+  }, [url]);
+  return model;
+}
+
 export function Lights() {
   return (
     <>
-      <spotLight color="white" position={[-10, -10, -10]} intensity={100} />
-      <spotLight color="white" position={[-10, 0, 15]} intensity={400} />
-      <spotLight color="white" position={[-5, 20, 2]} intensity={250} />
-      <spotLight color="white" position={[15, 10, -2]} intensity={200} />
-      <spotLight color="white" position={[15, 10, 5]} intensity={100} />
-      <spotLight color="white" position={[5, -10, 5]} intensity={400} />
+      <spotLight color="#61dafb" position={[-10, -10, -10]} intensity={200} />
+      <spotLight color="#61dafb" position={[-10, 0, 15]} intensity={800} />
+      <spotLight color="#61dafb" position={[-5, 20, 2]} intensity={500} />
+      <spotLight color="#f2056f" position={[15, 10, -2]} intensity={2000} />
+      <spotLight color="#f2056f" position={[15, 10, 5]} intensity={1000} />
+      <spotLight color="#b107db" position={[5, -10, 5]} intensity={800} />
     </>
   );
 }
 
 export function Model() {
-  const fileUrl = "/ball.glb";
+  const model = useSharedModel("/ball.glb");
   const mesh = useRef();
-  const gltf = useLoader(GLTFLoader, fileUrl);
+
+  if (!model) return null;  // Ha a modell még nem töltődött be, ne jeleníts meg semmit
 
   return (
-    <mesh ref={mesh} position={[-0.5, -0.5, 0]} 
-    rotation={[-2.5, 0, -0.3]}
-    variants={{
-      hover: {
-        z: 1.1,
-        x: -1.5,
-        rotateX: -0.2,
-        rotateZ: 0.4
-      }
-    }}>
-      <primitive object={gltf.scene} />
-    </mesh>
-  );
-}
-
-
-export function Sphere() {
-  return (
-    <motion.mesh position={[-0.5, -0.5, 0]} variants={{ hover: { z: 2 } }}>
-      <sphereGeometry args={[0.4]} />
-      <Material />
+    <motion.mesh
+      ref={mesh}
+      scale={0.75}
+      rotation={[-2.5, 0, -0.3]}
+      position={[-0.65, -0.5, -0.2]} 
+      variants={{
+         hover: { 
+          z: 1.6,
+          x: -0.12,
+        }
+      }}
+    >
+      <primitive object={model.scene} />
     </motion.mesh>
   );
 }
 
+// export function Sphere() {
+//   return (
+//     <motion.mesh position={[-0.5, -0.5, 0]} variants={{ hover: { z: 2 } }}>
+//       <sphereGeometry args={[0.4]} />
+//       <Material />
+//     </motion.mesh>
+//   );
+// }
+
 export function Cone() {
+  const model = useSharedModel("/ball.glb");
+  const mesh = useRef();
+
+  if (!model) return null;  // Ha a modell még nem töltődött be, ne jeleníts meg semmit
+
   return (
     <motion.mesh
-      position={[-0.8, 0.4, 0]}
+      ref={mesh}
+      scale={0.5}
+      position={[-1.6, 0.4, 0]}
       rotation={[-0.5, 0, -0.3]}
       variants={{
         hover: {
           z: 1.1,
-          x: -1.5,
+          x: -2.25,
           rotateX: -0.2,
           rotateZ: 0.4
         }
       }}
     >
-      <coneGeometry args={[0.3, 0.6, 20]} />
-      <Material />
+      <primitive object={model.scene} />
     </motion.mesh>
   );
 }
 
 export function Torus() {
+  const model = useSharedModel("/ball.glb");
+  const mesh = useRef();
+
+  if (!model) return null;
+
   return (
     <motion.mesh
-      position={[0.1, 0.4, 0]}
+      ref={mesh}
+      scale={0.5}  // Megmarad a Torus eredeti pozíciója
+      position={[0.3, 0.75, -0.5]}
       rotation={[-0.5, 0.5, 0]}
       variants={{
         hover: {
-          y: 0.5,
-          z: 2,
+          x: 0.5,
+          y: 1,
+          z: 1,
           rotateY: -0.2
         }
       }}
     >
-      <torusGeometry args={[0.2, 0.1, 10, 50]} />
-      <Material />
+      <primitive object={model.scene} />
     </motion.mesh>
   );
 }
 
 export function Icosahedron() {
+  const model = useSharedModel("/ball.glb");
+  const mesh = useRef();
+
+  if (!model) return null;
+
   return (
     <motion.mesh
+      ref={mesh}
+      scale={0.5} // Megmarad az Icosahedron eredeti pozíciója
       position={[1.1, 0, 0]}
       rotation-z={0.5}
       variants={{
         hover: {
-          x: 1.8,
-          z: 0.6,
+          x: 2.5,
+          z: 1.3,
           y: 0.6,
           rotateZ: -0.5
         }
       }}
     >
-      <icosahedronGeometry args={[0.7, 0]} />
-      <Material />
+      <primitive object={model.scene} />
     </motion.mesh>
   );
 }
+
+export function Labda2() {
+  const model = useSharedModel("/ball.glb");
+  const mesh = useRef();
+
+  if (!model) return null;
+
+  return (
+    <motion.mesh
+      ref={mesh}
+      scale={0.5} // Megmarad az Icosahedron eredeti pozíciója
+      position={[1.1, 0, 0]}
+      rotation-z={0.5}
+      variants={{
+        hover: {
+          x: 2.5,
+          z: 1.3,
+          y: 0.6,
+          rotateZ: -0.5
+        }
+      }}
+    >
+      <primitive object={model.scene} />
+    </motion.mesh>
+  );
+}
+
+export function Labda3() {
+  const model = useSharedModel("/ball.glb");
+  const mesh = useRef();
+
+  if (!model) return null;
+
+  return (
+    <motion.mesh
+      ref={mesh}
+      scale={0.5} // Megmarad az Icosahedron eredeti pozíciója
+      position={[1.1, 0, 0]}
+      rotation-z={0.5}
+      variants={{
+        hover: {
+          x: 2.5,
+          z: 1.3,
+          y: 0.6,
+          rotateZ: -0.5
+        }
+      }}
+    >
+      <primitive object={model.scene} />
+    </motion.mesh>
+  );
+}
+
 
 export function Material() {
   return <meshPhongMaterial color="#fff" specular="#61dafb" shininess={10} />;

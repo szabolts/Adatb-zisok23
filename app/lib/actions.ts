@@ -31,7 +31,7 @@ export async function authenticate(
 ) {
   try {
     await signIn('credentials', Object.fromEntries(formData));
-    return 'Success';
+    // console.log("formData: ", formData)
   } catch (error) {
     if ((error as Error).message.includes('CredentialsSignin')) {
       return 'CredentialSignin';
@@ -57,8 +57,8 @@ export async function createUser ( formData: FormData) {
     INSERT INTO User (id, email, password, name)
     VALUES (${cuid()}, ${email}, ${bPassword}, ${name})
     `;
-  // return { success: true };
-  redirect('/dashboard');
+  return { success: true };
+  // redirect('/dashboard');
   
   } catch (error) {
     return { success: false, message: "Hiba történt a regisztráció során." };

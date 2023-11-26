@@ -1,5 +1,4 @@
 "use client"
-
 import "./styles.css";
 import { Suspense, useState } from "react";
 import { motion, MotionConfig, useMotionValue } from "framer-motion";
@@ -8,8 +7,8 @@ import { transition } from "@/app/ui/about/settings";
 import useMeasure from "react-use-measure";
 import Link from "next/link";
 
-export default function App() {
-  const [ref, bounds] = useMeasure({ scroll: false });
+export default function FainButton() {
+    const [ref, bounds] = useMeasure({ scroll: false });
   const [isHover, setIsHover] = useState(false);
   const [isPress, setIsPress] = useState(false);
   const mouseX = useMotionValue(0);
@@ -21,7 +20,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="h-[600px] flex items-center justify-center ">
     <MotionConfig transition={transition}>
     <Link href="/dashboard">
       <motion.button
@@ -82,4 +81,5 @@ export default function App() {
     </MotionConfig>
     </div>
   );
+
 }

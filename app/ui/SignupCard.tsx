@@ -14,6 +14,7 @@ import Link from "next/link";
 import { createUser } from "../lib/actions";
 import toast, { Toaster } from 'react-hot-toast';
 
+
 export default function SignupCard() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,12 +23,14 @@ export default function SignupCard() {
       const response = await createUser(formData);
       if (response?.success) {
         toast.success("Sikeres regisztráció!");
+        
       } else {
         toast.error(response?.message || "Ismeretlen hiba történt.");
       }
     } catch (error) {
-      toast.error("Hiba történt a kommunikáció során.");
+      toast.error("Regisztráció sikertelen.");
     }
+    
   };
 
   return (

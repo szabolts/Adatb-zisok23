@@ -102,12 +102,12 @@ export async function deleteMerkozes(id: number) {
 
 // export async function createProbaMerkozesek(csapatNevek: string[]) {
 //   try {
-//     // Lekérdezzük a kiválasztott csapatokat a nevük alapján
+//  
 //     const lekerdezettCsapatok = await prisma.$queryRaw<{ csapatID: number }[]>`
 //       SELECT csapatID FROM Csapat WHERE csapatnev IN (${Prisma.join(csapatNevek)})
 //     `;
 
-//     // Az összes csapatpárosítás létrehozása
+//     
 //     for (let i = 0; i < lekerdezettCsapatok.length; i++) {
 //       for (let j = i + 1; j < lekerdezettCsapatok.length; j++) {
 //         const hazaiCsapatID = lekerdezettCsapatok[i].csapatID;
